@@ -32,16 +32,6 @@ public class CustomBotController {
         return chatGPTResponse.getChoices().get(0).getMessage().getContent();
     }
 
-    /*
-    public ChatGPTRequest chat(@RequestParam("prompt") String prompt) {
-
-        ChatGPTRequest request = new ChatGPTRequest(model, prompt);
-        ChatGPTResponse chatGPTResponse = template.postForObject(apiURL, request, ChatGPTResponse.class);
-
-        return chatGPTResponse;
-    }
-     */
-
     // 주소는 http://localhost:8080/chat/bot?prompt=/ 와 같은 형태를 띌 것
 
     /*
