@@ -26,6 +26,8 @@ public class CustomBotController {
     @GetMapping("/chat")
     public String chat(@RequestParam("prompt") String prompt) {
 
+        System.out.println("Received prompt from frontend: " + prompt);
+
         ChatGPTRequest request = new ChatGPTRequest(model, prompt);
         ChatGPTResponse chatGPTResponse = template.postForObject(apiURL, request, ChatGPTResponse.class);
 
