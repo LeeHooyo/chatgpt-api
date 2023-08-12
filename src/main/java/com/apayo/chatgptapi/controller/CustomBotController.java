@@ -4,7 +4,10 @@ import com.apayo.chatgptapi.dto.ChatGPTRequest;
 import com.apayo.chatgptapi.dto.ChatGPTResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @CrossOrigin(origins = "*")
@@ -22,14 +25,26 @@ public class CustomBotController {
     private RestTemplate template;
 
     @GetMapping("/chat")
-    public String chat(@RequestParam("prompt") String prompt) {
+    public ResponseEntity<String> chat(@RequestParam("prompt") String prompt) {
+        try {
 
-        System.out.println("Received prompt from frontend: " + prompt);
+            System.out.println("Received prompt from frontend: " + prompt);
 
-        ChatGPTRequest request = new ChatGPTRequest(model, prompt);
-        ChatGPTResponse chatGPTResponse = template.postForObject(apiURL, request, ChatGPTResponse.class);
+            ChatGPTRequest request = new ChatGPTRequest(model, prompt);
+            ChatGPTResponse chatGPTResponse = template.postForObject(apiURL, request, ChatGPTResponse.class);
 
-        return chatGPTResponse.getChoices().get(0).getMessage().getContent();
+            return ResponseEntity.ok(chatGPTResponse.getChoices().get(0).getMessage().getContent());
+
+        } catch (RestClientException e) {
+
+            // API 호출 과정에서 발생한 네트워크 오류
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while processing the request.");
+
+        } catch (IllegalArgumentException e) {
+
+            // 적절하지 않은 파라미터의 사용
+            return ResponseEntity.badRequest().body("Invalid request parameter(s).");
+        }
     }
 
     /*
@@ -41,6 +56,13 @@ public class CustomBotController {
         프론트에 반환하는 데이터 = (변환한 도로명 주소 + 검색 결과)
 
         위도 경도를 주면 reverse geolocation을 백에서 돌리면 되잖아.
+
+        System.out.println("Received prompt from frontend: " + prompt);
+
+        ChatGPTRequest request = new ChatGPTRequest(model, prompt);
+        ChatGPTResponse chatGPTResponse = template.postForObject(apiURL, request, ChatGPTResponse.class);
+
+        return chatGPTResponse.getChoices().get(0).getMessage().getContent();
 
      */
 }

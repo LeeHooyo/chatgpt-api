@@ -44,9 +44,9 @@ public class GeocodingService {
             if (results.length > 0) {
                 StringBuilder addressBuilder = new StringBuilder();
 
-                for (int i = 3; i >= 1; i--) {
+                for (int i = 4; i >= 1; i--) {
                     addressBuilder.append(results[0].addressComponents[i].longName);
-                    if (i < 6) {
+                    if (i < 6 && i > 1) {
                         addressBuilder.append(" "); // 요소 사이에 공백 추가
                     }
                 }
